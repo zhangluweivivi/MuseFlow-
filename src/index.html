@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuseFlow - AI MV 制作</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 标题栏 -->
+    <header class="titlebar">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">MuseFlow</span>
+      </div>
+      <div class="subtitle">AI 音乐视频制作工具</div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 左侧：视频上传和分析 -->
+      <section class="left-panel">
+        <!-- 步骤 1: 视频上传 -->
+        <div class="step-card" id="step1">
+          <div class="step-header">
+            <span class="step-number">1</span>
+            <h3>上传爆款MV视频</h3>
+          </div>
+          <div class="step-content">
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-content">
+                <span class="drop-icon">📁</span>
+                <p>拖放视频文件到此处</p>
+                <p class="drop-hint">或点击选择文件</p>
+                <button class="btn btn-primary" id="selectVideoBtn">选择视频</button>
+              </div>
+            </div>
+            <div class="video-info" id="videoInfo" style="display: none;">
+              <div class="info-row">
+                <span class="label">文件:</span>
+                <span class="value" id="videoName">-</span>
+              </div>
+              <div class="info-row">
+                <span class="label">时长:</span>
+                <span class="value" id="videoDuration">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 2: 智能抽帧 -->
+        <div class="step-card" id="step2" style="opacity: 0.5;">
+          <div class="step-header">
+            <span class="step-number">2</span>
+            <h3>智能抽帧</h3>
+            <span class="status-badge" id="frameStatus">等待中</span>
+          </div>
+          <div class="step-content">
+            <div class="frames-container" id="framesContainer">
+              <!-- 动态生成的帧预览 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 3: 音频分离 -->
+        <div class="step-card" id="step3" style="opacity: 0.5;">
+          <div class="step-header">
+            <span class="step-number">3</span>
+            <h3>音频分离</h3>
+            <span class="status-badge" id="audioStatus">等待中</span>
+          </div>
+          <div class="step-content">
+            <div class="audio-player-container" id="audioPlayerContainer" style="display: none;">
+              <audio id="audioPlayer" controls></audio>
+              <div class="audio-trim">
+                <label>裁剪音频片段:</label>
+                <div class="trim-inputs">
+                  <input type="number" id="trimStart" placeholder="开始(秒)" value="0" min="0">
+                  <span>~</span>
+                  <input type="number" id="trimEnd" placeholder="结束(秒)" value="10" min="0">
+                  <button class="btn btn-small" id="trimBtn">裁剪</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右侧：配置和生成 -->
+      <section class="right-panel">
+        <!-- 步骤 4: 参数配置 -->
+        <div class="step-card" id="step4" style="opacity: 0.5;">
+          <div class="step-header">
+            <span class="step-number">4</span>
+            <h3>生成配置</h3>
+          </div>
+          <div class="step-content">
+            <!-- 选中的帧 -->
+            <div class="config-section">
+              <label>选中的首帧图:</label>
+              <div class="selected-frame-preview" id="selectedFramePreview">
+                <div class="placeholder">请从左侧选择一帧</div>
+              </div>
+              <button class="btn btn-small btn-secondary" id="analyzePromptBtn" style="display: none; margin-top: 10px; width: 100%;">
+                <span class="btn-icon">🔮</span>
+                反推提示词（kimi-k2.5）
+              </button>
+              <span class="hint-text" id="analyzeHint" style="display: none; font-size: 12px; color: #888; margin-top: 5px;">
+                使用 Kimi AI 分析图像并生成专业提示词
+              </span>
+            </div>
+
+            <!-- 提示词 -->
+            <div class="config-section">
+              <label>反推提示词:</label>
+              <textarea id="promptText" rows="4" placeholder="分析视频后自动生成提示词..."></textarea>
+              <button class="btn btn-small btn-secondary" id="editPromptBtn">编辑</button>
+            </div>
+
+            <!-- 工作流选择 -->
+            <div class="config-section">
+              <label>ComfyUI 工作流:</label>
+              <select id="workflowSelect">
+                <option value="normal" selected>普通版 (单镜头，快速生成)</option>
+                <option value="master">大师版 (4分镜，更丰富的视觉变化)</option>
+              </select>
+              <small class="workflow-hint" id="workflowHint">
+                普通版适合快速测试，大师版适合制作高质量MV
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 5: 生视频脚本策划 -->
+        <div class="step-card" id="step5" style="opacity: 0.5; display: none;">
+          <div class="step-header">
+            <span class="step-number">5</span>
+            <h3>生视频脚本策划</h3>
+            <span class="status-badge" id="storyboardStatus">等待中</span>
+          </div>
+          <div class="step-content">
+            <div class="storyboard-intro" id="scriptIntro">
+              <p id="scriptIntroText">🎬 选择工作流后将自动生成视频脚本</p>
+              <button class="btn btn-primary" id="generateScriptBtn" style="display: none;">
+                <span class="btn-icon">✨</span>
+                <span id="generateScriptBtnText">AI 智能生成脚本</span>
+              </button>
+            </div>
+
+            <!-- 普通版：单段提示词 -->
+            <div class="normal-script-container" id="normalScriptContainer" style="display: none;">
+              <div class="script-info">
+                <span class="script-duration">音频时长: <strong id="normalDuration">0</strong> 秒</span>
+                <span class="script-type">普通版 - 单镜头生成</span>
+              </div>
+              <textarea class="script-prompt" id="normalScriptPrompt" rows="6" placeholder="点击上方按钮生成视频提示词..."></textarea>
+            </div>
+
+            <!-- 大师版：多分镜提示词 -->
+            <div class="storyboard-container" id="storyboardContainer" style="display: none;">
+              <div class="script-info">
+                <span class="script-duration">音频时长: <strong id="masterDuration">0</strong> 秒</span>
+                <span class="script-type">大师版 - <strong id="shotCount">4</strong> 个分镜</span>
+              </div>
+              <!-- 分镜将动态生成 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-panel">
+          <button class="btn btn-large btn-primary" id="generateBtn" disabled>
+            <span class="btn-icon">🚀</span>
+            生成 ComfyUI 配置
+          </button>
+          <button class="btn btn-large btn-secondary" id="openComfyUIBtn">
+            <span class="btn-icon">🎨</span>
+            打开 ComfyUI
+          </button>
+        </div>
+
+        <!-- 日志输出 -->
+        <div class="log-panel" id="logPanel">
+          <div class="log-header">运行日志</div>
+          <div class="log-content" id="logContent"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

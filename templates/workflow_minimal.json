@@ -1,0 +1,184 @@
+{
+  "last_node_id": 10,
+  "last_link_id": 9,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [100, 100],
+      "size": [320, 280],
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "widgets_values": ["frame.jpg", "image"],
+      "order": 0
+    },
+    {
+      "id": 2,
+      "type": "LoadAudio",
+      "pos": [100, 450],
+      "size": [320, 100],
+      "inputs": [],
+      "outputs": [
+        {"name": "audio", "type": "AUDIO", "links": [2], "slot_index": 0}
+      ],
+      "widgets_values": ["audio.wav"],
+      "order": 1
+    },
+    {
+      "id": 3,
+      "type": "WanVideoModelLoader",
+      "pos": [500, 100],
+      "size": [400, 200],
+      "inputs": [],
+      "outputs": [
+        {"name": "model", "type": "WANVIDEOMODEL", "links": [3], "slot_index": 0}
+      ],
+      "widgets_values": [
+        "wan2.1_i2v_480p_14B_fp8_e4m3fn.safetensors",
+        "fp8_e4m3fn",
+        "offload_device",
+        "sageattn"
+      ],
+      "order": 2
+    },
+    {
+      "id": 4,
+      "type": "WanVideoVAE",
+      "pos": [500, 350],
+      "size": [400, 120],
+      "inputs": [],
+      "outputs": [
+        {"name": "vae", "type": "WANVIDEOVAE", "links": [4], "slot_index": 0}
+      ],
+      "widgets_values": [
+        "wan_2.1_vae.safetensors",
+        "bf16"
+      ],
+      "order": 3
+    },
+    {
+      "id": 5,
+      "type": "WanVideoTextEncodeCached",
+      "pos": [100, 600],
+      "size": [400, 250],
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "positive", "type": "CONDITIONING", "links": [5], "slot_index": 0},
+        {"name": "negative", "type": "CONDITIONING", "links": [6], "slot_index": 1}
+      ],
+      "widgets_values": [
+        "umt5-xxl-enc-bf16.safetensors",
+        "bf16",
+        "现代化舞台场景，专业灯光效果，虚拟歌手表演，高清画质，年轻虚拟歌手，精致五官，时尚服装，动态表演姿态",
+        "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量"
+      ],
+      "order": 4
+    },
+    {
+      "id": 6,
+      "type": "WanVideoEmptyEmbeds",
+      "pos": [550, 600],
+      "size": [320, 120],
+      "inputs": [],
+      "outputs": [
+        {"name": "embeds", "type": "WANVIDEOEMBEDS", "links": [7], "slot_index": 0}
+      ],
+      "widgets_values": [480, 832, 81],
+      "order": 5
+    },
+    {
+      "id": 7,
+      "type": "EmptyLTXVideoLatent",
+      "pos": [950, 100],
+      "size": [320, 150],
+      "inputs": [
+        {"name": "width", "type": "INT", "link": null, "widget": {"name": "width"}},
+        {"name": "height", "type": "INT", "link": null, "widget": {"name": "height"}},
+        {"name": "length", "type": "INT", "link": null, "widget": {"name": "length"}},
+        {"name": "batch_size", "type": "INT", "link": null, "widget": {"name": "batch_size"}}
+      ],
+      "outputs": [
+        {"name": "latent", "type": "LATENT", "links": [8], "slot_index": 0}
+      ],
+      "widgets_values": [832, 480, 81, 1],
+      "order": 6
+    },
+    {
+      "id": 8,
+      "type": "WanVideoSampler",
+      "pos": [1000, 350],
+      "size": [400, 300],
+      "inputs": [
+        {"name": "model", "type": "WANVIDEOMODEL", "link": 3},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": null},
+        {"name": "image_embeds", "type": "WANVIDEOIMAGEEMBEDS", "link": null},
+        {"name": "clip_embeds", "type": "WANVIDEOCLIPEMBEDS", "link": null},
+        {"name": "unianim_poses", "type": "unianim_poses", "link": null},
+        {"name": "samples", "type": "LATENT", "link": 8},
+        {"name": "positive", "type": "WANVIDEODENOISE", "link": 5},
+        {"name": "negative", "type": "WANVIDEODENOISE", "link": 6},
+        {"name": "controlnet_embeds", "type": "WANVIDEOCONTROLNET", "link": null},
+        {"name": "controlnet_embeds2", "type": "WANVIDEOCONTROLNET", "link": null},
+        {"name": "controlnet_embeds3", "type": "WANVIDEOCONTROLNET", "link": null},
+        {"name": "controlnet_embeds4", "type": "WANVIDEOCONTROLNET", "link": null},
+        {"name": "denoise_strength", "type": "FLOAT", "link": null, "widget": {"name": "denoise_strength"}}
+      ],
+      "outputs": [
+        {"name": "samples", "type": "LATENT", "links": [9], "slot_index": 0}
+      ],
+      "widgets_values": [true, 25, 4.5, 1, "euler", "simple", 0, 1, 0.8],
+      "order": 7
+    },
+    {
+      "id": 9,
+      "type": "WanVideoDecode",
+      "pos": [1450, 350],
+      "size": [350, 100],
+      "inputs": [
+        {"name": "vae", "type": "WANVIDEOVAE", "link": 4},
+        {"name": "samples", "type": "LATENT", "link": 9}
+      ],
+      "outputs": [
+        {"name": "images", "type": "IMAGE", "links": [10], "slot_index": 0}
+      ],
+      "widgets_values": [],
+      "order": 8
+    },
+    {
+      "id": 10,
+      "type": "SaveVideo",
+      "pos": [1900, 350],
+      "size": [350, 150],
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 10},
+        {"name": "audio", "type": "AUDIO", "link": 2},
+        {"name": "frame_rate", "type": "FLOAT", "link": null, "widget": {"name": "frame_rate"}},
+        {"name": "filename_prefix", "type": "STRING", "link": null, "widget": {"name": "filename_prefix"}}
+      ],
+      "outputs": [],
+      "widgets_values": [16, "museflow_output", "video/h265-mp4", true, 22, 1920, false, false, false],
+      "order": 9
+    }
+  ],
+  "links": [
+    [1, 1, 0, 999, 0, "IMAGE"],
+    [2, 2, 0, 10, 1, "AUDIO"],
+    [3, 3, 0, 8, 0, "WANVIDEOMODEL"],
+    [4, 4, 0, 9, 0, "WANVIDEOVAE"],
+    [5, 5, 0, 8, 6, "WANVIDEODENOISE"],
+    [6, 5, 1, 8, 7, "WANVIDEODENOISE"],
+    [7, 6, 0, 8, 1, "WANVIDEOEMBEDS"],
+    [8, 7, 0, 8, 5, "LATENT"],
+    [9, 8, 0, 9, 1, "LATENT"],
+    [10, 9, 0, 10, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

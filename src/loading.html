@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuseFlow - 加载中</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: rgba(15, 23, 42, 0.95);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .loading-container {
+      width: 400px;
+      padding: 40px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(94, 234, 212, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .title {
+      color: #f8fafc;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    
+    .progress-container {
+      background: rgba(30, 41, 59, 0.8);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+    }
+    
+    .progress-bar.indeterminate {
+      animation: indeterminate 2s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent);
+      width: 50%;
+    }
+    
+    @keyframes indeterminate {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    
+    .status-text {
+      color: #e2e8f0;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    
+    .status-dots {
+      display: inline-block;
+      width: 20px;
+      text-align: left;
+    }
+    
+    .steps {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(94, 234, 212, 0.1);
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: #64748b;
+      font-size: 13px;
+      transition: color 0.3s;
+    }
+    
+    .step.active {
+      color: #5eead4;
+    }
+    
+    .step.completed {
+      color: #22c55e;
+    }
+    
+    .step-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      background: rgba(100, 116, 139, 0.2);
+    }
+    
+    .step.active .step-icon {
+      background: rgba(94, 234, 212, 0.2);
+      animation: pulse 1s ease-in-out infinite;
+    }
+    
+    .step.completed .step-icon {
+      background: rgba(34, 197, 94, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <div class="logo">🎬</div>
+    <h1 class="title">MuseFlow</h1>
+    <p class="subtitle">正在为您准备 ComfyUI 工作流...</p>
+    
+    <div class="progress-container">
+      <div class="progress-bar indeterminate" id="progressBar"></div>
+    </div>
+    
+    <p class="status-text" id="statusText">正在初始化<span class="status-dots" id="dots">...</span></p>
+    
+    <div class="steps">
+      <div class="step" id="step1">
+        <span class="step-icon">1</span>
+        <span>检查 ComfyUI 状态</span>
+      </div>
+      <div class="step" id="step2">
+        <span class="step-icon">2</span>
+        <span>加载工作流配置</span>
+      </div>
+      <div class="step" id="step3">
+        <span class="step-icon">3</span>
+        <span>注入参数并准备</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    const progressBar = document.getElementById('progressBar');
+    const statusText = document.getElementById('statusText');
+    const dots = document.getElementById('dots');
+    
+    let dotCount = 0;
+    setInterval(() => {
+      dotCount = (dotCount + 1) % 4;
+      dots.textContent = '.'.repeat(dotCount || 1);
+    }, 500);
+    
+    // 监听状态更新
+    ipcRenderer.on('loading-status', (event, { message, progress }) => {
+      // 支持多行消息
+      const formattedMessage = message.replace(/\n/g, '<br>');
+      statusText.innerHTML = formattedMessage + '<span class="status-dots" id="dots">...</span>';
+      
+      if (progress !== null) {
+        progressBar.classList.remove('indeterminate');
+        progressBar.style.width = progress + '%';
+        
+        // 更新步骤状态
+        if (progress >= 10) {
+          document.getElementById('step1').classList.add('completed');
+          document.getElementById('step1').querySelector('.step-icon').textContent = '✓';
+        }
+        if (progress >= 50) {
+          document.getElementById('step1').classList.remove('active');
+          document.getElementById('step2').classList.add('active');
+        }
+        if (progress >= 80) {
+          document.getElementById('step2').classList.remove('active');
+          document.getElementById('step2').classList.add('completed');
+          document.getElementById('step2').querySelector('.step-icon').textContent = '✓';
+          document.getElementById('step3').classList.add('active');
+        }
+        if (progress >= 100) {
+          document.getElementById('step3').classList.remove('active');
+          document.getElementById('step3').classList.add('completed');
+          document.getElementById('step3').querySelector('.step-icon').textContent = '✓';
+        }
+      }
+      
+      // 错误状态
+      if (message.includes('❌')) {
+        progressBar.style.background = '#ef4444';
+        progressBar.style.width = '100%';
+      }
+      
+      // 警告状态（如下载中）
+      if (message.includes('正在下载') || message.includes('响应缓慢')) {
+        progressBar.style.background = 'linear-gradient(90deg, #f59e0b, #f97316)';
+      }
+    });
+  </script>
+</body>
+</html>
