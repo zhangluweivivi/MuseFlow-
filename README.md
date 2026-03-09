@@ -1,11 +1,12 @@
 <p align="center">
+  
   <img src="./assets/museflow-banner.png" alt="MuseFlow Banner" width="100%"/>
 </p>
 
 <h1 align="center">🎬 MuseFlow Desktop</h1>
 
 <p align="center">
-  <strong>一键将任意视频转换为 AI 音乐视频 (AI MV)</strong><br>
+  <strong>一键复刻任意视频转换为 AI 音乐MV视频 （一键复刻爆款mv)</strong><br>
   智能分析 · 自动抽帧 · 音频分离 · 一键生成 ComfyUI 工作流
 </p>
 
