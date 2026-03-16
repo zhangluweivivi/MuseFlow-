@@ -7,7 +7,7 @@
 
 <p align="center">
   <strong>一键复刻任意视频转换为 AI 音乐MV视频 （一键复刻爆款mv)</strong><br>
-  智能分析 · 自动抽帧 · 音频分离 · 一键生成 ComfyUI 工作流
+  智能分析 · 自动抽帧 · 音频分离 · 一键生成 ComfyUI 工作流配置文件（可手动导入）
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@
 ## 🎥 Demo
 
 <p align="center">
-  <a href="[https://www.youtube.com/watch?v=your-demo-video](https://youtu.be/cKa1hIwhz1c)">
+  <a href="https://www.youtube.com/watch?v=cKa1hIwhz1c">
     <img src="./assets/demo-thumbnail.png" alt="MuseFlow Demo" width="80%"/>
   </a>
   <br>
