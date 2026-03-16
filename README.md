@@ -39,17 +39,12 @@
 ## 🎥 Demo
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=your-demo-video">
+  <a href="[https://www.youtube.com/watch?v=your-demo-video](https://youtu.be/cKa1hIwhz1c)">
     <img src="./assets/demo-thumbnail.png" alt="MuseFlow Demo" width="80%"/>
   </a>
   <br>
   <em>👆 点击观看完整演示视频</em>
 </p>
-
-### 效果展示
-
-
-
 
 ## ✨ Features
 
