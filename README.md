@@ -48,20 +48,8 @@
 
 ### 效果展示
 
-<table>
-  <tr>
-    <td width="50%">
-      <p align="center"><strong>原始视频</strong></p>
-      <img src="./assets/examples/input-video.gif" width="100%"/>
-    </td>
-    <td width="50%">
-      <p align="center"><strong>AI 生成 MV</strong></p>
-      <img src="./assets/examples/output-mv.gif" width="100%"/>
-    </td>
-  </tr>
-</table>
 
----
+
 
 ## ✨ Features
 
@@ -174,7 +162,7 @@ npm start
 │       ↓                                                            │
 │  3️⃣  选择首帧     ──────▶  可视化选择最佳首帧图                      │
 │       ↓                                                            │
-│  4️⃣  AI 生成      ──────▶  反推提示词 + 多分镜脚本 (可选)            │
+│  4️⃣  AI 生成      ──────▶  反推生图提示词 + 生视频脚本 (可选)            │
 │       ↓                                                            │
 │  5️⃣  生成配置     ──────▶  注入参数到工作流模板                      │
 │       ↓                                                            │
