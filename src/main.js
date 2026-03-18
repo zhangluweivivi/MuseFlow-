@@ -446,7 +446,7 @@ ipcMain.handle('generate-storyboard', async (event, { imagePath, basePrompt, dur
     const base64Image = imageBuffer.toString('base64');
     
     // 构建 Kimi API 请求 - 使用内置 API Key
-    const BUILT_IN_API_KEY = 'sk-eLtAygDQXm0ipASXotqxury96HDcvWkfvp9Iqw5zgoPU2ByZ';
+    const BUILT_IN_API_KEY = 'your-apikey';
     const apiKey = BUILT_IN_API_KEY;
     
     console.log('🔑 [generate-storyboard] 使用内置 API Key:', apiKey.substring(0, 10) + '...');
@@ -631,7 +631,7 @@ ipcMain.handle('analyze-prompt', async (event, { imagePath }) => {
     const base64Image = imageBuffer.toString('base64');
 
     // 构建 Kimi API 请求 - 使用内置 API Key
-    const BUILT_IN_API_KEY = 'sk-eLtAygDQXm0ipASXotqxury96HDcvWkfvp9Iqw5zgoPU2ByZ';
+    const BUILT_IN_API_KEY = 'your-apikey';
     const apiKey = BUILT_IN_API_KEY;
 
     console.log('🔑 [analyze-prompt] 使用内置 API Key:', apiKey.substring(0, 10) + '...');
@@ -741,7 +741,7 @@ ipcMain.handle('generate-video-script', async (event, { imagePath, basePrompt, d
     const base64Image = imageBuffer.toString('base64');
 
     // 构建 Kimi API 请求 - 使用内置 API Key
-    const BUILT_IN_API_KEY = 'sk-eLtAygDQXm0ipASXotqxury96HDcvWkfvp9Iqw5zgoPU2ByZ';
+    const BUILT_IN_API_KEY = 'your-apikey';
     const apiKey = BUILT_IN_API_KEY;
 
     console.log('🔑 [generate-video-script] 使用内置 API Key:', apiKey.substring(0, 10) + '...');
